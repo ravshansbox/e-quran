@@ -21,6 +21,7 @@ const Container = styled.div({
 });
 
 const Select = styled.select({
+  fontSize: '16px',
   opacity: '0.5',
   position: 'absolute',
 });
