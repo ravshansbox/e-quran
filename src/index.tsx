@@ -35,29 +35,16 @@ const App = () => {
   const [isPageSelectVisible, setPageSelectVisible] = React.useState(false);
   const [currentPage, setCurrentPage] = React.useState(1);
 
-  const setCurrentPageAndScroll = (page: React.SetStateAction<number>) => {
-    setCurrentPage(page);
-    window.scrollTo(0, 0);
-  };
-
-  const handlePageSelect = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ): void => {
-    setCurrentPageAndScroll(parseInt(event.target.value));
-  };
-
-  const handleImageClick = (
-    event: React.MouseEvent<HTMLImageElement, MouseEvent>
-  ): void => {
+  const onClick = (event: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
     const positionX = event.pageX - event.target['offsetLeft'];
     const ratio = positionX / event.target['width'];
     if (ratio < 0.25) {
       if (currentPage > 1) {
-        setCurrentPageAndScroll((page) => page - 1);
+        setCurrentPage((page) => page - 1);
       }
     } else if (ratio > 0.75) {
       if (currentPage < 604) {
-        setCurrentPageAndScroll((page) => page + 1);
+        setCurrentPage((page) => page + 1);
       }
     } else {
       setPageSelectVisible((isPageSelectVisible) => !isPageSelectVisible);
@@ -67,13 +54,20 @@ const App = () => {
   return (
     <Container>
       {isPageSelectVisible && (
-        <Select value={currentPage} onChange={handlePageSelect}>
-          {times(604).map((item) => (
-            <option key={item + 1}>{item + 1}</option>
+        <Select
+          value={currentPage}
+          onChange={(event) => setCurrentPage(parseInt(event.target.value))}
+        >
+          {times(604).map((i) => (
+            <option key={i + 1}>{i + 1}</option>
           ))}
         </Select>
       )}
-      <Image src={`images/${currentPage}.jpg`} onClick={handleImageClick} />
+      <Image
+        src={`images/${currentPage}.jpg`}
+        onClick={onClick}
+        onLoad={() => window.scrollTo(0, 0)}
+      />
     </Container>
   );
 };
