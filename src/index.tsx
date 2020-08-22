@@ -20,10 +20,16 @@ const Container = styled.div({
   position: 'relative',
 });
 
-const Select = styled.select({
-  fontSize: '16px',
+const SelectContainer = styled.div({
+  display: 'flex',
+  justifyContent: 'center',
   opacity: '0.5',
   position: 'absolute',
+  width: '100%',
+});
+
+const Select = styled.select({
+  fontSize: '16px',
 });
 
 const Image = styled.img({
@@ -32,7 +38,6 @@ const Image = styled.img({
 });
 
 const App = () => {
-  const [isPageSelectVisible, setPageSelectVisible] = React.useState(false);
   const [currentPage, setCurrentPage] = React.useState(1);
 
   const onClick = (event: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
@@ -46,14 +51,12 @@ const App = () => {
       if (currentPage > 1) {
         setCurrentPage((page) => page - 1);
       }
-    } else {
-      setPageSelectVisible((isPageSelectVisible) => !isPageSelectVisible);
     }
   };
 
   return (
     <Container>
-      {isPageSelectVisible && (
+      <SelectContainer>
         <Select
           value={currentPage}
           onChange={(event) => setCurrentPage(parseInt(event.target.value))}
@@ -62,7 +65,7 @@ const App = () => {
             <option key={i + 1}>{i + 1}</option>
           ))}
         </Select>
-      )}
+      </SelectContainer>
       <Image
         src={`images/${currentPage}.jpg`}
         onClick={onClick}
