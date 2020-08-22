@@ -27,7 +27,7 @@ module.exports = {
       },
     ],
   },
-  performance: { maxAssetSize: 512 * 1024, maxEntrypointSize: 512 * 1024 },
+  performance: { maxAssetSize: 1024 * 1024, maxEntrypointSize: 256 * 1024 },
   stats: { children: false, modules: false },
   devServer: {
     historyApiFallback: true,
