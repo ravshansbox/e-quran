@@ -39,12 +39,12 @@ const App = () => {
     const positionX = event.pageX - event.target['offsetLeft'];
     const ratio = positionX / event.target['width'];
     if (ratio < 0.25) {
-      if (currentPage > 1) {
-        setCurrentPage((page) => page - 1);
-      }
-    } else if (ratio > 0.75) {
       if (currentPage < 604) {
         setCurrentPage((page) => page + 1);
+      }
+    } else if (ratio > 0.75) {
+      if (currentPage > 1) {
+        setCurrentPage((page) => page - 1);
       }
     } else {
       setPageSelectVisible((isPageSelectVisible) => !isPageSelectVisible);
