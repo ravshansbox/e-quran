@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { render } from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 
 const times = (count: number, fn?: (i: number) => any) => {
@@ -31,13 +31,18 @@ const Image = styled.img({
 });
 
 const App = () => {
-  const [isPageSelectVisible, setPageSelectVisible] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [isPageSelectVisible, setPageSelectVisible] = React.useState(false);
+  const [currentPage, setCurrentPage] = React.useState(1);
+
+  const setCurrentPageAndScroll = (page: React.SetStateAction<number>) => {
+    setCurrentPage(page);
+    window.scrollTo(0, 0);
+  };
 
   const handlePageSelect = (
     event: React.ChangeEvent<HTMLSelectElement>
   ): void => {
-    setCurrentPage(parseInt(event.target.value));
+    setCurrentPageAndScroll(parseInt(event.target.value));
   };
 
   const handleImageClick = (
@@ -47,11 +52,11 @@ const App = () => {
     const ratio = positionX / event.target['width'];
     if (ratio < 0.25) {
       if (currentPage > 1) {
-        setCurrentPage((page) => page - 1);
+        setCurrentPageAndScroll((page) => page - 1);
       }
     } else if (ratio > 0.75) {
       if (currentPage < 604) {
-        setCurrentPage((page) => page + 1);
+        setCurrentPageAndScroll((page) => page + 1);
       }
     } else {
       setPageSelectVisible((isPageSelectVisible) => !isPageSelectVisible);
@@ -72,7 +77,7 @@ const App = () => {
   );
 };
 
-render(
+ReactDOM.render(
   <>
     <GlobalStyle />
     <App />
