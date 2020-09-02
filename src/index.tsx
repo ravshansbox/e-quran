@@ -1,3 +1,4 @@
+import localForage from 'localforage';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import styled, { createGlobalStyle } from 'styled-components';
@@ -34,15 +35,53 @@ const Select = styled.select({
   },
 });
 
-const Image = styled.img({
+const Img = styled.img({
   display: 'block',
   width: '100%',
 });
 
+const getBlob = async (page: string) => {
+  const cachedBlob = await localForage.getItem<Blob>(page);
+  if (cachedBlob !== null) {
+    return cachedBlob;
+  }
+  const response = await fetch(`images/${page}.jpg`);
+  const blob = await response.blob();
+  await localForage.setItem(page, blob);
+  return blob;
+};
+
+const pageObjectUrlMap = new Map<string, string>();
+
+const getBlobObjectUrl = async (page: string) => {
+  if (!pageObjectUrlMap.has(page)) {
+    pageObjectUrlMap.set(page, URL.createObjectURL(await getBlob(page)));
+  }
+  return pageObjectUrlMap.get(page);
+};
+
+const Image = ({ page, onClick }) => {
+  const [objectUrl, setObjectUrl] = React.useState<string>(null);
+
+  React.useEffect(() => {
+    getBlobObjectUrl(String(page)).then(setObjectUrl);
+  }, [page]);
+
+  return (
+    <Img
+      src={objectUrl}
+      onClick={onClick}
+      onLoad={() => window.scrollTo(0, 0)}
+    />
+  );
+};
+
 const App = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
 
-  const onClick = (event: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
+  const handleClick = (
+    event: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
     const positionX = event.pageX - event.target['offsetLeft'];
     const ratio = positionX / event.target['width'];
     if (ratio < 0.25) {
@@ -68,11 +107,7 @@ const App = () => {
           ))}
         </Select>
       </SelectContainer>
-      <Image
-        src={`images/${currentPage}.jpg`}
-        onClick={onClick}
-        onLoad={() => window.scrollTo(0, 0)}
-      />
+      <Image page={currentPage} onClick={handleClick} />
     </Container>
   );
 };
