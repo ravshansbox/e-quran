@@ -29,7 +29,9 @@ const SelectContainer = styled.div({
 });
 
 const Select = styled.select({
-  fontSize: '16px',
+  ':active': {
+    fontSize: '16px',
+  },
 });
 
 const Image = styled.img({
